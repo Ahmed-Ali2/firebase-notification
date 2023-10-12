@@ -1,9 +1,9 @@
-import admin from "firebase-admin";
+import { initializeApp, applicationDefault } from "firebase-admin/app";
 import express, { json } from "express";
 import cors from "cors";
 import { getMessaging } from "firebase-admin/messaging";
 
-var serviceAccount = require("path/to/serviceAccountKey.json");
+// var serviceAccount = require("path/to/serviceAccountKey.json");
 
 process.env.GOOGLE_APPLICATION_CREDENTIALS;
 
@@ -17,16 +17,24 @@ app.use(function (req, res, next) {
 
 app.use(
   cors({
+    origin: "*",
+  })
+);
+
+app.use(
+  cors({
     methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
   })
 );
 
 initializeApp({
-  credential: admin.credential.cert(serviceAccount),
+  credential: applicationDefault(),
+  projectId: "potion-for-creators",
 });
 
 app.post("/send", function (req, res) {
   const received_token = req.body.fcmToken;
+
   const message = {
     notification: {
       title: "notify",
